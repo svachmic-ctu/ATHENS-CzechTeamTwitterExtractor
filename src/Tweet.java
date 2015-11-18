@@ -17,7 +17,7 @@ public class Tweet {
         JSONObject entities = (JSONObject) json.get("entities");
 
         for (Object hashtag : (JSONArray) entities.get("hashtags")) {
-            String hashtagStr = (String) ((JSONObject) hashtag).get("text");
+            String hashtagStr = ((String) ((JSONObject) hashtag).get("text")).toLowerCase();
             hashtags.add(hashtagStr);
         }
     }
@@ -28,5 +28,10 @@ public class Tweet {
 
     public Set<String> getHashtags() {
         return hashtags;
+    }
+
+    @Override
+    public String toString() {
+        return text + " " + "|" + hashtags;
     }
 }
