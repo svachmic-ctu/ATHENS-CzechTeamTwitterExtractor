@@ -17,13 +17,12 @@ public class HashtagGraph {
             List<String[]> pairs = generatePairs(tweet.getHashtags());
             for (String[] pair : pairs) {
                 DefaultWeightedEdge e = graph.getEdge(pair[0], pair[1]);
-                double weight = e == null ? 0 : graph.getEdgeWeight(e);
+                double weight = e == null ? 0.0D : graph.getEdgeWeight(e);
                 graph.addEdge(pair[0], pair[1]);
 
                 e = graph.getEdge(pair[0], pair[1]);
                 graph.setEdgeWeight(e, weight + 1);
             }
-
         }
     }
 
