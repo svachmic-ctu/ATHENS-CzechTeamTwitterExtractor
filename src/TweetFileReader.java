@@ -1,11 +1,13 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class TweetFileReader {
 
-    public static List<Tweet> readFile(String filename) throws IOException {
-        List<Tweet> tweets = new ArrayList<Tweet>();
+    public static Set<Tweet> readFile(String filename) throws IOException {
+        Set<Tweet> tweets = new HashSet<Tweet>();
         FileInputStream fstream = new FileInputStream(filename);
         BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
 
