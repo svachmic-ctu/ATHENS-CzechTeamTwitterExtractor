@@ -5,7 +5,6 @@ public class RawDataProcessor {
 
     public static Tweet process(String tweet) {
         Object obj = JSONValue.parse(tweet);
-
         return new Tweet((JSONObject) obj);
     }
 }
