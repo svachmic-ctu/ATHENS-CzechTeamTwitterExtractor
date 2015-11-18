@@ -2,7 +2,9 @@ import java.io.IOException;
 
 public class Main {
 
-    public static void main(String[] args) {
-        // have a nice day
+    public static void main(String[] args) throws IOException {
+        String filename = args[0];
+
+        TweetFileReader.readFile(filename);
     }
 }
