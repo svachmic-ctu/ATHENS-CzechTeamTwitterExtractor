@@ -2,11 +2,25 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
 public class HashtagGraph {
     SimpleWeightedGraph<String, DefaultWeightedEdge> graph = new SimpleWeightedGraph<String, DefaultWeightedEdge>(DefaultWeightedEdge.class);
+    private final Comparator<Vertex> byDegree = new Comparator<Vertex>() {
+        public int compare(Vertex o1, Vertex o2) {
+            if (o1.degree == o2.degree) {
+                return 0;
+            }
+
+            if (o1.degree > o2.degree) {
+                return 1;
+            } else {
+                return -1;
+            }
+        }
+    };
 
     public HashtagGraph(Set<Tweet> tweets) {
         for (Tweet tweet : tweets) {
@@ -26,8 +40,8 @@ public class HashtagGraph {
         }
     }
 
-    public List<String[]> generatePairs(Set<String> hastags) {
-        List<String> list = new ArrayList<String>(hastags);
+    public List<String[]> generatePairs(Set<String> hashtags) {
+        List<String> list = new ArrayList<String>(hashtags);
         List<String[]> pairs = new ArrayList<String[]>();
 
         for (int i = 0; i < list.size(); i++) {
@@ -42,5 +56,40 @@ public class HashtagGraph {
         }
 
         return pairs;
+    }
+
+    public double getVertexDegree(String vertex) {
+        double degree = 0;
+        Set<DefaultWeightedEdge> edges = this.graph.edgesOf(vertex);
+
+        for (DefaultWeightedEdge e : edges) {
+            degree += this.graph.getEdgeWeight(e);
+        }
+
+        return degree;
+    }
+
+    public List<Vertex> getSortedVertices() {
+        List<Vertex> vertices = new ArrayList<Vertex>();
+        Set<String> vertexSet = this.graph.vertexSet();
+
+        for (String vertex : vertexSet) {
+            double degree = this.getVertexDegree(vertex);
+            Vertex v = new Vertex(degree, vertex);
+            vertices.add(v);
+        }
+
+        vertices.sort(byDegree);
+        return vertices;
+    }
+
+    private class Vertex {
+        String name;
+        double degree;
+
+        public Vertex(double degree, String name) {
+            this.degree = degree;
+            this.name = name;
+        }
     }
 }
