@@ -1,10 +1,18 @@
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 public class Main {
 
     private final static String FILE = "file";
     private final static String DIR = "dir";
+    private final static String DIRS = "dirs";
+
+    private final static int SUBGRAPH_COUNT = 20;
+
+    private final static String OUTPUT_FILE_EXTENSION = ".subgr";
 
     public static void main(String[] args) throws IOException {
         String mode = args[0];
@@ -14,38 +22,48 @@ public class Main {
             String filename = args[1];
 
             System.out.println("Reading file " + filename);
+            System.out.println("-----------------");
 
             tweets = TweetFileReader.readFile(filename);
+            Main.getSubgraphsAndOutputThemToFiles(tweets, filename);
         } else if (mode.equals(Main.DIR)) {
             String dirname = args[1];
-
-            System.out.println("Reading directory " + dirname);
-
-            tweets = TweetFileReader.readDirectory(dirname);
+            readDirectory(dirname);
+        } else if (mode.equals(Main.DIRS)) {
+            for (int i = 1; i < args.length; i++) {
+                String dirname = args[1];
+                readDirectory(dirname);
+            }
         } else {
-            throw new RuntimeException("Invalid first argument. Use '" + Main.FILE + "' or '" + Main.DIR + "'");
+            throw new RuntimeException("Invalid first argument. Use '" + Main.FILE + "', '" + Main.DIR + "' or '" + Main.DIRS + "'");
         }
+    }
 
-        int subgraphCount = Integer.parseInt(args[2]);
-
-        System.out.println("Files processed");
-        System.out.println(tweets.getTweets().size() + " unique tweets");
+    private static void readDirectory(String directory) throws IOException {
+        System.out.println("Reading directory " + directory);
         System.out.println("-----------------");
 
+        TweetSet tweets = TweetFileReader.readDirectory(directory);
+        Main.getSubgraphsAndOutputThemToFiles(tweets, directory + "/out");
+    }
+
+    private static void getSubgraphsAndOutputThemToFiles(TweetSet tweets, String filename) throws FileNotFoundException, UnsupportedEncodingException {
         HashtagGraph graph = new HashtagGraph(tweets);
+        List<HashtagGraph> subgraphs = graph.getSubgraphsWithHighestDensities(Main.SUBGRAPH_COUNT);
 
-        System.out.println("Graph constructed");
-        System.out.println("-----------------");
-
-        List<HashtagGraph> subgraphs = graph.getSubgraphsWithHighestDensities(subgraphCount);
-
-        System.out.println("-----------------");
-
-        for (HashtagGraph subgraph : subgraphs) {
-            System.out.println("Subgraph " + subgraph);
-            System.out.println("Density: " + subgraph.getGraphDensity());
-            System.out.println("Users: " + subgraph.getUsersCount());
-            System.out.println("Tweets: " + subgraph.getTweetsCount());
+        for (int i = 0; i < subgraphs.size(); i++) {
+            Main.outputSubgraphToFile(subgraphs.get(i), filename + "_" + i);
         }
+    }
+
+    private static void outputSubgraphToFile(HashtagGraph subgraph, String filename) throws FileNotFoundException, UnsupportedEncodingException {
+        PrintWriter writer = new PrintWriter(filename + Main.OUTPUT_FILE_EXTENSION, "UTF-8");
+
+        writer.println(subgraph);
+        writer.println("Density: " + subgraph.getGraphDensity());
+        writer.println("Users: " + subgraph.getUsersCount());
+        writer.println("Tweets: " + subgraph.getTweetsCount());
+
+        writer.close();
     }
 }

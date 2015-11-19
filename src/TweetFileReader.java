@@ -26,8 +26,6 @@ public class TweetFileReader {
 
         br.close();
 
-        System.out.println("File " + filename + " processed: " + count + " tweets.");
-
         return tweets;
     }
 

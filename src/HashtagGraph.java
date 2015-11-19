@@ -109,13 +109,10 @@ public class HashtagGraph {
                 verticesToRemove.add(vertex);
             }
 
-            System.out.println("---------");
-            System.out.println("Will remove: " + verticesToRemove);
-            System.out.println("---------");
-            System.out.println(vertexSet);
-
             HashtagGraph subgraph = this.buildSubgraph(vertexSet);
             subgraphs.add(subgraph);
+
+            System.out.println(subgraph);
         }
 
         return subgraphs;
