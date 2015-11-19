@@ -15,13 +15,13 @@ public class TweetFileReader {
         BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
 
         String strLine;
-        int count = 0;
 
         while ((strLine = br.readLine()) != null) {
             Tweet tw = RawDataProcessor.process(strLine);
-            tweets.add(tw);
 
-            count++;
+            if (tw != null) {
+                tweets.add(tw);
+            }
         }
 
         br.close();
