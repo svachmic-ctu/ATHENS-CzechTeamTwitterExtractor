@@ -1,13 +1,16 @@
 import java.io.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class TweetFileReader {
 
-    public static Set<Tweet> readFile(String filename) throws IOException {
-        Set<Tweet> tweets = new HashSet<Tweet>();
+    public static TweetSet readFile(String filename) throws IOException {
+        TweetSet tweets = new TweetSet();
+
+        return TweetFileReader.readFile(filename, tweets);
+    }
+
+    public static TweetSet readFile(String filename, TweetSet tweets) throws IOException {
         FileInputStream fstream = new FileInputStream(filename);
         BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
 
@@ -28,13 +31,12 @@ public class TweetFileReader {
         return tweets;
     }
 
-    public static Set<Tweet> readDirectory(String directory) throws IOException {
+    public static TweetSet readDirectory(String directory) throws IOException {
         List<String> filenames = TweetFileReader.getFilenamesFromDirectory(directory);
-        Set<Tweet> tweets = new HashSet<Tweet>();
+        TweetSet tweets = new TweetSet();
 
         for (String filename : filenames) {
-            Set<Tweet> tweetsInFile = TweetFileReader.readFile(directory + "/" + filename);
-            tweets.addAll(tweetsInFile);
+            TweetFileReader.readFile(directory + "/" + filename, tweets);
         }
 
         return tweets;

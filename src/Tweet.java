@@ -10,6 +10,8 @@ public class Tweet {
 
     protected Set<String> hashtags;
 
+    protected String user;
+
     public Tweet(JSONObject json) {
         text = (String) json.get("text");
         hashtags = new TreeSet<String>();
@@ -20,6 +22,9 @@ public class Tweet {
             String hashtagStr = ((String) ((JSONObject) hashtag).get("text")).toLowerCase();
             hashtags.add(hashtagStr);
         }
+
+        JSONObject user = (JSONObject) json.get("user");
+        this.user = (Long) user.get("id") + "";
     }
 
     public String getText() {
@@ -28,6 +33,10 @@ public class Tweet {
 
     public Set<String> getHashtags() {
         return hashtags;
+    }
+
+    public String getUser() {
+        return user;
     }
 
     @Override

@@ -1,6 +1,5 @@
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 public class Main {
 
@@ -9,7 +8,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         String mode = args[0];
-        Set<Tweet> tweets;
+        TweetSet tweets;
 
         if (mode.equals(Main.FILE)) {
             String filename = args[1];
@@ -30,7 +29,7 @@ public class Main {
         int subgraphCount = Integer.parseInt(args[2]);
 
         System.out.println("Files processed");
-        System.out.println(tweets.size() + " unique tweets");
+        System.out.println(tweets.getTweets().size() + " unique tweets");
         System.out.println("-----------------");
 
         HashtagGraph graph = new HashtagGraph(tweets);
@@ -38,12 +37,15 @@ public class Main {
         System.out.println("Graph constructed");
         System.out.println("-----------------");
 
-        List<Set<String>> subgraphs = graph.getSubgraphsWithHighestDensities(subgraphCount);
+        List<HashtagGraph> subgraphs = graph.getSubgraphsWithHighestDensities(subgraphCount);
 
         System.out.println("-----------------");
 
-        for (Set subgraph : subgraphs) {
-            System.out.println(subgraph);
+        for (HashtagGraph subgraph : subgraphs) {
+            System.out.println("Subgraph " + subgraph);
+            System.out.println("Density: " + subgraph.getGraphDensity());
+            System.out.println("Users: " + subgraph.getUsersCount());
+            System.out.println("Tweets: " + subgraph.getTweetsCount());
         }
     }
 }
