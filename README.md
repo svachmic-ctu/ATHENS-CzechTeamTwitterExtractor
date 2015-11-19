@@ -22,7 +22,25 @@ Analyze the data by various techniques to obtain dense subgraphs.
 
 ### Problem solution
 
-TBD
+All Paris Files log (generated 4 subgraphs):
+
+<pre><code>
+Files processed
+37753 unique tweets
+Graph constructed
+
+Will remove: [republique, marcherepublicaine, liberté, jesuischarlie, charliehebdo]
+[jesuischarlie, paris, liberté, republique, charliehebdo, république, noussommescharlie, france, marcherepublicaine, charlie]
+
+Will remove: [fontainebleau, chateau, europe, france, paris]
+[love, paris, eiffeltower, notredame, france, travel, europe, fontainebleau, architecture, chateau]
+
+Will remove: [laics, african, american, palestine, israel]
+[ue, pfw, palestine, african, israel, hautecouture, juifs, american, laics, musulmans]
+
+Will remove: [hautecouture, couture, pfw, vscocam, fashion]
+[pfw, love, instafood, foodporn, yummy, vscocam, hautecouture, couture, food, fashion]
+</code></pre>
 
 ### How to use the program
 
