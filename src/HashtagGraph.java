@@ -107,9 +107,11 @@ public class HashtagGraph {
         Set<String> vertexSet = this.graph.vertexSet();
 
         for (String vertex : vertexSet) {
-            double degree = this.getVertexDegree(vertex);
-            Vertex v = new Vertex(degree, vertex);
-            vertices.add(v);
+            if (!this.ommitedVertices.contains(vertex)) {
+                double degree = this.getVertexDegree(vertex);
+                Vertex v = new Vertex(degree, vertex);
+                vertices.add(v);
+            }
         }
 
         vertices.sort(byDegree);
