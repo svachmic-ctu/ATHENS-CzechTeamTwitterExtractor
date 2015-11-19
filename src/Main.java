@@ -31,7 +31,7 @@ public class Main {
             readDirectory(dirname);
         } else if (mode.equals(Main.DIRS)) {
             for (int i = 1; i < args.length; i++) {
-                String dirname = args[1];
+                String dirname = args[i];
                 readDirectory(dirname);
             }
         } else {
