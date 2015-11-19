@@ -123,6 +123,13 @@ public class HashtagGraph {
         return vertices;
     }
 
+    private void removeVertexWithLowestDegree() {
+        List<Vertex> vertices = this.getSortedVertices();
+        Vertex vertex = vertices.get(0);
+
+        ommitedVertices.add(vertex.name);
+    }
+
     private class Vertex {
         String name;
         double degree;
