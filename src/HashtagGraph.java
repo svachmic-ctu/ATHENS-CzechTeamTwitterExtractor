@@ -46,52 +46,70 @@ public class HashtagGraph {
     }
 
     public List<Set<String>> getSubgraphsWithHighestDensities(int howMany) {
-        HashtagGraph mGraph = this.getDeepCopy();
+        List<Set<String>> subgraphs = new ArrayList<Set<String>>();
+        List<String> verticesToRemove = new ArrayList<String>();
 
-        int graphSize = mGraph.graph.vertexSet().size();
+        for (int k = 0; k < howMany; k++) {
+            HashtagGraph mGraph = this.getDeepCopy();
+            mGraph.graph.removeAllVertices(verticesToRemove);
 
-        // density in each step of removing a vertex with lowest degree
-        Map<Integer, Double> steps = new HashMap<Integer, Double>();
-        List<String> removedVertices = new LinkedList<String>();
+            int graphSize = mGraph.graph.vertexSet().size();
 
-        int step = 0;
-        double density;
-        String removedVertexName;
+            // density in each step of removing a vertex with lowest degree
+            Map<Integer, Double> steps = new HashMap<Integer, Double>();
+            List<String> removedVertices = new LinkedList<String>();
 
-        while (removedVertices.size() < graphSize) {
-            int subgraphSize = mGraph.graph.vertexSet().size();
+            int step = 0;
+            double density;
+            String removedVertexName;
 
-            if (subgraphSize >= this.MIN_VERTICES_IN_SUBGRAPH && subgraphSize <= this.MAX_VERTICES_IN_SUBGRAPH) {
-                density = mGraph.getGraphDensity();
-                steps.put(step, density);
+            while (removedVertices.size() < graphSize) {
+                int subgraphSize = mGraph.graph.vertexSet().size();
+
+                if (subgraphSize >= this.MIN_VERTICES_IN_SUBGRAPH && subgraphSize <= this.MAX_VERTICES_IN_SUBGRAPH) {
+                    density = mGraph.getGraphDensity();
+                    steps.put(step, density);
+                }
+
+                removedVertexName = mGraph.removeVertexWithLowestDegree();
+                removedVertices.add(removedVertexName);
+
+                step++;
             }
 
-            removedVertexName = mGraph.removeVertexWithLowestDegree();
-            removedVertices.add(removedVertexName);
+            // find the step with the highest density
+            Map<Integer, Double> sortedSteps = Utils.sortByValue(steps);
+            List<Integer> sortedStepsList = new ArrayList<Integer>(sortedSteps.keySet());
 
-            step++;
-        }
-
-        // find the step with the highest density
-        Map<Integer, Double> sortedSteps = Utils.sortByValue(steps);
-        List<Integer> sortedStepsList = new ArrayList<Integer>(sortedSteps.keySet());
-
-        List<Set<String>> subgraphs = new ArrayList<Set<String>>();
-
-        for (int i = 0; i < howMany; i++) {
-            int step2 = sortedStepsList.get(i);
+            int step2 = sortedStepsList.get(0);
             Set<String> subgraph = new HashSet<String>();
 
             ListIterator<String> it = removedVertices.listIterator(removedVertices.size());
+            Map<String, Double> preVerticesToRemove = new HashMap<String, Double>();
 
             for (int j = step2; j < removedVertices.size(); j++) {
                 String vertex = it.previous();
                 subgraph.add(vertex);
+
+                double weightRatio = this.getVertexDegree(vertex) / this.graph.edgesOf(vertex).size();
+                preVerticesToRemove.put(vertex, weightRatio);
             }
 
+            Map<String, Double> sortedPreVerticesToRemove = Utils.sortByValue(preVerticesToRemove);
+            List<String> sortedPreVerticesToRemoveList = new ArrayList<String>(sortedPreVerticesToRemove.keySet());
+            ListIterator<String> preIt = sortedPreVerticesToRemoveList.listIterator(sortedPreVerticesToRemoveList.size());
+
+            for (int i = 0; i < sortedPreVerticesToRemoveList.size()/2; i++) {
+                String vertex = preIt.previous();
+                verticesToRemove.add(vertex);
+            }
+
+            System.out.println("---------");
+            System.out.println("Will remove: " + verticesToRemove);
+            System.out.println("---------");
+            System.out.println(subgraph);
             subgraphs.add(subgraph);
         }
-
 
         return subgraphs;
     }
