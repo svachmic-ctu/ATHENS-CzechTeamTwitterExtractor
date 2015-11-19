@@ -93,10 +93,15 @@ public class HashtagGraph {
 
     private double getEdgeSetSum() {
         Set<DefaultWeightedEdge> edges = this.graph.edgeSet();
-        double sum = 1.0D;
+        double sum = 0.0D;
 
         for (DefaultWeightedEdge e : edges) {
-            sum += this.graph.getEdgeWeight(e);
+            String source = graph.getEdgeSource(e);
+            String destination = graph.getEdgeTarget(e);
+
+            if (!this.ommitedVertices.contains(source) && !this.ommitedVertices.contains(destination)) {
+                sum += this.graph.getEdgeWeight(e);
+            }
         }
 
         return sum;
