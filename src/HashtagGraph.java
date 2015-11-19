@@ -80,7 +80,12 @@ public class HashtagGraph {
         Set<DefaultWeightedEdge> edges = this.graph.edgesOf(vertex);
 
         for (DefaultWeightedEdge e : edges) {
-            degree += this.graph.getEdgeWeight(e);
+            String source = graph.getEdgeSource(e);
+            String destination = graph.getEdgeTarget(e);
+
+            if (!this.ommitedVertices.contains(source) && !this.ommitedVertices.contains(destination)) {
+                degree += this.graph.getEdgeWeight(e);
+            }
         }
 
         return degree;
