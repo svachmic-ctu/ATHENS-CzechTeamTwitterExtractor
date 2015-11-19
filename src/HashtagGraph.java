@@ -1,12 +1,12 @@
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class HashtagGraph {
+
+    private Set<String> ommitedVertices = new HashSet<String>();
+
     SimpleWeightedGraph<String, DefaultWeightedEdge> graph = new SimpleWeightedGraph<String, DefaultWeightedEdge>(DefaultWeightedEdge.class);
     private final Comparator<Vertex> byDegree = new Comparator<Vertex>() {
         public int compare(Vertex o1, Vertex o2) {
