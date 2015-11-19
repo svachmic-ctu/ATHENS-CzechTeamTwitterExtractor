@@ -60,6 +60,7 @@ public class HashtagGraph {
 
     // helper methods
 
+    // reference: https://www.quora.com/How-do-you-compute-the-density-of-a-weighted-graph
     private double getGraphDensity() {
         double density = 0.0D;
 
