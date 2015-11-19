@@ -69,6 +69,17 @@ public class HashtagGraph {
         return degree;
     }
 
+    public double getEdgeSetSum() {
+        Set<DefaultWeightedEdge> edges = this.graph.edgeSet();
+        double sum = 1.0D;
+
+        for (DefaultWeightedEdge e : edges) {
+            sum += this.graph.getEdgeWeight(e);
+        }
+
+        return sum;
+    }
+
     public List<Vertex> getSortedVertices() {
         List<Vertex> vertices = new ArrayList<Vertex>();
         Set<String> vertexSet = this.graph.vertexSet();
