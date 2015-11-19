@@ -6,14 +6,11 @@ import java.util.TreeSet;
 
 public class Tweet {
 
-    protected String text;
-
     protected Set<String> hashtags;
 
     protected String user;
 
     public Tweet(JSONObject json) {
-        text = (String) json.get("text");
         hashtags = new TreeSet<String>();
 
         JSONObject entities = (JSONObject) json.get("entities");
@@ -27,9 +24,6 @@ public class Tweet {
         this.user = (Long) user.get("id") + "";
     }
 
-    public String getText() {
-        return text;
-    }
 
     public Set<String> getHashtags() {
         return hashtags;
@@ -41,7 +35,7 @@ public class Tweet {
 
     @Override
     public String toString() {
-        return text + " " + "|" + hashtags;
+        return hashtags.toString();
     }
 
     @Override
