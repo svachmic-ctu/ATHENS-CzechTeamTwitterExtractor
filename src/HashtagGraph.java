@@ -65,7 +65,7 @@ public class HashtagGraph {
         double density = 0.0D;
 
         double doubleWeightSum = 2 * this.getEdgeSetSum();
-        int vertexCount = this.graph.vertexSet().size();
+        int vertexCount = this.graph.vertexSet().size() - this.ommitedVertices.size();
         int possibleVertexCount = vertexCount * (vertexCount - 1);
 
         if (possibleVertexCount != 0) {
