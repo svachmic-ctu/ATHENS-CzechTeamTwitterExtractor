@@ -5,7 +5,10 @@ import java.util.*;
 
 public class HashtagGraph {
 
-    private Set<String> ommitedVertices = new HashSet<String>();
+    private final int MIN_VERTICES_IN_SUBGRAPH = 2;
+    private final int MAX_VERTICES_IN_SUBGRAPH = 10;
+
+    private Set<Tweet> tweets;
 
     SimpleWeightedGraph<String, DefaultWeightedEdge> graph = new SimpleWeightedGraph<String, DefaultWeightedEdge>(DefaultWeightedEdge.class);
     private final Comparator<Vertex> byDegree = new Comparator<Vertex>() {
@@ -23,6 +26,8 @@ public class HashtagGraph {
     };
 
     public HashtagGraph(Set<Tweet> tweets) {
+        this.tweets = tweets;
+
         for (Tweet tweet : tweets) {
             for (String hashtag : tweet.getHashtags()) {
                 graph.addVertex(hashtag);
@@ -38,6 +43,57 @@ public class HashtagGraph {
                 graph.setEdgeWeight(e, weight + 1);
             }
         }
+    }
+
+    public List<Set<String>> getSubgraphsWithHighestDensities(int howMany) {
+        HashtagGraph mGraph = this.getDeepCopy();
+
+        int graphSize = mGraph.graph.vertexSet().size();
+
+        // density in each step of removing a vertex with lowest degree
+        Map<Integer, Double> steps = new HashMap<Integer, Double>();
+        List<String> removedVertices = new LinkedList<String>();
+
+        int step = 0;
+        double density;
+        String removedVertexName;
+
+        while (removedVertices.size() < graphSize) {
+            int subgraphSize = mGraph.graph.vertexSet().size();
+
+            if (subgraphSize >= this.MIN_VERTICES_IN_SUBGRAPH && subgraphSize <= this.MAX_VERTICES_IN_SUBGRAPH) {
+                density = mGraph.getGraphDensity();
+                steps.put(step, density);
+            }
+
+            removedVertexName = mGraph.removeVertexWithLowestDegree();
+            removedVertices.add(removedVertexName);
+
+            step++;
+        }
+
+        // find the step with the highest density
+        Map<Integer, Double> sortedSteps = Utils.sortByValue(steps);
+        List<Integer> sortedStepsList = new ArrayList<Integer>(sortedSteps.keySet());
+
+        List<Set<String>> subgraphs = new ArrayList<Set<String>>();
+
+        for (int i = 0; i < howMany; i++) {
+            int step2 = sortedStepsList.get(i);
+            Set<String> subgraph = new HashSet<String>();
+
+            ListIterator<String> it = removedVertices.listIterator(removedVertices.size());
+
+            for (int j = step2; j < removedVertices.size(); j++) {
+                String vertex = it.previous();
+                subgraph.add(vertex);
+            }
+
+            subgraphs.add(subgraph);
+        }
+
+
+        return subgraphs;
     }
 
     private List<String[]> generatePairs(Set<String> hashtags) {
@@ -65,7 +121,7 @@ public class HashtagGraph {
         double density = 0.0D;
 
         double doubleWeightSum = 2 * this.getEdgeSetSum();
-        int vertexCount = this.graph.vertexSet().size() - this.ommitedVertices.size();
+        int vertexCount = this.graph.vertexSet().size();
         int possibleVertexCount = vertexCount * (vertexCount - 1);
 
         if (possibleVertexCount != 0) {
@@ -80,12 +136,7 @@ public class HashtagGraph {
         Set<DefaultWeightedEdge> edges = this.graph.edgesOf(vertex);
 
         for (DefaultWeightedEdge e : edges) {
-            String source = graph.getEdgeSource(e);
-            String destination = graph.getEdgeTarget(e);
-
-            if (!this.ommitedVertices.contains(source) && !this.ommitedVertices.contains(destination)) {
-                degree += this.graph.getEdgeWeight(e);
-            }
+            degree += this.graph.getEdgeWeight(e);
         }
 
         return degree;
@@ -96,12 +147,7 @@ public class HashtagGraph {
         double sum = 0.0D;
 
         for (DefaultWeightedEdge e : edges) {
-            String source = graph.getEdgeSource(e);
-            String destination = graph.getEdgeTarget(e);
-
-            if (!this.ommitedVertices.contains(source) && !this.ommitedVertices.contains(destination)) {
-                sum += this.graph.getEdgeWeight(e);
-            }
+            sum += this.graph.getEdgeWeight(e);
         }
 
         return sum;
@@ -112,22 +158,26 @@ public class HashtagGraph {
         Set<String> vertexSet = this.graph.vertexSet();
 
         for (String vertex : vertexSet) {
-            if (!this.ommitedVertices.contains(vertex)) {
-                double degree = this.getVertexDegree(vertex);
-                Vertex v = new Vertex(degree, vertex);
-                vertices.add(v);
-            }
+            double degree = this.getVertexDegree(vertex);
+            Vertex v = new Vertex(degree, vertex);
+            vertices.add(v);
         }
 
         vertices.sort(byDegree);
         return vertices;
     }
 
-    private void removeVertexWithLowestDegree() {
+    private String removeVertexWithLowestDegree() {
         List<Vertex> vertices = this.getSortedVertices();
         Vertex vertex = vertices.get(0);
 
-        ommitedVertices.add(vertex.name);
+        graph.removeVertex(vertex.name);
+
+        return vertex.name;
+    }
+
+    private HashtagGraph getDeepCopy() {
+        return new HashtagGraph(tweets);
     }
 
     private class Vertex {
