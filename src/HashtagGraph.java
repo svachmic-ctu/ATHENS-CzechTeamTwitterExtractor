@@ -40,7 +40,7 @@ public class HashtagGraph {
         }
     }
 
-    public List<String[]> generatePairs(Set<String> hashtags) {
+    private List<String[]> generatePairs(Set<String> hashtags) {
         List<String> list = new ArrayList<String>(hashtags);
         List<String[]> pairs = new ArrayList<String[]>();
 
@@ -58,7 +58,23 @@ public class HashtagGraph {
         return pairs;
     }
 
-    public double getVertexDegree(String vertex) {
+    // helper methods
+
+    private double getGraphDensity() {
+        double density = 0.0D;
+
+        double doubleWeightSum = 2 * this.getEdgeSetSum();
+        int vertexCount = this.graph.vertexSet().size();
+        int possibleVertexCount = vertexCount * (vertexCount - 1);
+
+        if (possibleVertexCount != 0) {
+            density = doubleWeightSum / possibleVertexCount;
+        }
+
+        return density;
+    }
+
+    private double getVertexDegree(String vertex) {
         double degree = 0;
         Set<DefaultWeightedEdge> edges = this.graph.edgesOf(vertex);
 
@@ -69,7 +85,7 @@ public class HashtagGraph {
         return degree;
     }
 
-    public double getEdgeSetSum() {
+    private double getEdgeSetSum() {
         Set<DefaultWeightedEdge> edges = this.graph.edgeSet();
         double sum = 1.0D;
 
@@ -80,7 +96,7 @@ public class HashtagGraph {
         return sum;
     }
 
-    public List<Vertex> getSortedVertices() {
+    private List<Vertex> getSortedVertices() {
         List<Vertex> vertices = new ArrayList<Vertex>();
         Set<String> vertexSet = this.graph.vertexSet();
 
