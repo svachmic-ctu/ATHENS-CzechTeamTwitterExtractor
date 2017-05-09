@@ -1,3 +1,5 @@
+package cz.cvut.athens;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;

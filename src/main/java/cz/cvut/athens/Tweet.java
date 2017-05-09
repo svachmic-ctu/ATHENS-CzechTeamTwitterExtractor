@@ -1,3 +1,5 @@
+package cz.cvut.athens;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 

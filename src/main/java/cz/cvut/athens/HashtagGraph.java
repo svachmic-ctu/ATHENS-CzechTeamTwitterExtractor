@@ -1,3 +1,5 @@
+package cz.cvut.athens;
+
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 

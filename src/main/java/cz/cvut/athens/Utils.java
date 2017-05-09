@@ -1,3 +1,5 @@
+package cz.cvut.athens;
+
 import java.util.*;
 
 public class Utils {
